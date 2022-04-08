@@ -9,6 +9,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'HelloWorld',
   data () {
@@ -61,6 +62,7 @@ export default {
       
       LODOP.On_Return = function(taskID, value) {
         _self.templateCode = value;
+        console.log("origin value:"+_self.value)
         console.log("value:"+value)
       };
     },
