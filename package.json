@@ -10,7 +10,9 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.26.1",
     "element-ui": "^2.15.6",
+    "print-template": "^1.2.5",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

@@ -5,10 +5,8 @@
     <el-button v-loading="loading" @click="designTemplate" type="warning">模板预览</el-button>
     <el-button v-loading="loading" @click="design" type="warning">模板设计</el-button>
     <el-button v-loading="loading" @click="handlePrint" type="warning">模板打印</el-button>
-
   </div>
 </template>
-
 <script>
 
 export default {
@@ -28,6 +26,7 @@ export default {
         LOT_CODE:"20220317186171001A",
         LOT_CODE_QR:"P1109242-00-C:1T220317186171001A:17D"
       },
+      info:'',
       value: `LODOP.PRINT_INITA(0,4,600,480,"");
 LODOP.ADD_PRINT_TEXT(28,24,132,21,"MFG PART NUMBER:");
 LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
@@ -115,8 +114,7 @@ LODOP.SET_PRINT_STYLEA(0,"Bold",1);
 LODOP.ADD_PRINT_TEXT(331,96,148,15,"{{LOT_CODE}}");
 LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
 LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-LODOP.ADD_PRINT_BARCODE(284,240,110,82,"QRCode","{{LOT_CODE_QR}}");
-`
+LODOP.ADD_PRINT_BARCODE(284,240,110,82,"QRCode","{{LOT_CODE_QR}}");`
     }
   },
   created() {
@@ -129,6 +127,13 @@ LODOP.ADD_PRINT_BARCODE(284,240,110,82,"QRCode","{{LOT_CODE_QR}}");
     head.insertBefore(oscript, head.firstChild);
   },
   methods:{
+    loadLabelTemplate(){
+      this.$http.get(this.$api.getLabel).then(
+        response=>{console.log(response.data,
+        this.value=response.data.value.value
+        )}
+      ).then(err=>(console.log("err:"+err)))
+    },
     designTemplate() {
       let LODOP = getCLodop();
       let _self = this;
@@ -151,7 +156,8 @@ LODOP.ADD_PRINT_BARCODE(284,240,110,82,"QRCode","{{LOT_CODE_QR}}");
         console.log("value:"+value)
       };
     },
-     design() {
+    design() {
+      this.loadLabelTemplate()
       let LODOP = getCLodop();
       let _self = this;
       let newValue = _self.value;
@@ -167,6 +173,18 @@ LODOP.ADD_PRINT_BARCODE(284,240,110,82,"QRCode","{{LOT_CODE_QR}}");
         console.log("value:"+value)
       };
     },
+    handlePrint(){
+      let LODOP = getCLodop();
+      let _self = this;
+      let newValue = _self.value;
+      for (var k in _self.context) {
+        console.log(k+"->"+_self.context[k])
+        newValue = newValue.replaceAll("{{"+k+"}}",_self.context[k])
+      }
+      eval(newValue)
+      let res = LODOP.SELECT_PRINTER()
+      console.log("res:"+ res)
+    }
   }
   
 }

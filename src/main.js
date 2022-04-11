@@ -4,10 +4,15 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import {Button} from 'element-ui'
+import axios from 'axios'
+import api from './api/index.js'
 
 Vue.component(Button.name,Button);
 
 Vue.config.productionTip = false
+
+Vue.prototype.$http = axios
+Vue.prototype.$api = api
 
 /* eslint-disable no-new */
 new Vue({
